@@ -15,7 +15,7 @@ const createProduct = async (req, res) => {
       price,
       image: {
         data: file.buffer,
-        contentType: file.mimetye,
+        contentType: file.mimetype,
       },
     });
 
@@ -58,7 +58,53 @@ const getProductImage = async (req, res) => {
     res.contentType(product.image.contentType);
     res.send(product.image.data);
   } catch (err) {
-    res.status(500).json({ msg: "Error retrieving images" });
+    res.status(500).json({ msg: "Error retrieving images", err });
+  }
+};
+
+// update product
+const updateProduct = async (req, res) => {
+  try {
+    const { name, description, category, price } = req.body;
+    const file = req.file;
+
+    const updateData = {
+      name,
+      description,
+      category,
+      price,
+    };
+
+    if (file) {
+      updateData.image = {
+        data: file.buffer,
+        contentType: file.mimetype,
+      };
+    }
+
+    const product = await Product.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!product) return res.status(404).json({ msg: "Product not found" });
+
+    res.json({ msg: "Product updated successfully", product });
+  } catch (err) {
+    res.status(500).json({ msg: "Error updating product", err });
+  }
+};
+
+// delete product
+const deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+
+    if (!product) return res.status(404).json({ msg: "Product not found" });
+
+    res.json({ msg: "Product deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ msg: "Error deleting product", err });
   }
 };
 
@@ -67,4 +113,6 @@ module.exports = {
   getAllProducts,
   getSingleProduct,
   getProductImage,
+  updateProduct,
+  deleteProduct,
 };

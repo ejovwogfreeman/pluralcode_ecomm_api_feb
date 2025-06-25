@@ -30,6 +30,7 @@ app.get("/api", (req, res) =>
 
 // product routes
 app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/carts", require("./routes/cartRoutes"));
 
 // running my server
 app.listen(port, () =>
