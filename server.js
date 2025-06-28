@@ -30,7 +30,8 @@ app.get("/api", (req, res) =>
 
 // product routes
 app.use("/api/products", require("./routes/productRoutes"));
-app.use("/api/carts", require("./routes/cartRoutes"));
+app.use("/api/cart", require("./routes/cartRoutes"));
+app.use("/api/orders", require("./routes/orderRoutes"));
 
 // running my server
 app.listen(port, () =>
