@@ -3,6 +3,7 @@ const express = require("express");
 // load env
 require("dotenv").config();
 // const morgan = require("morgan");
+const cors = require("cors");
 const connectDB = require("./config/db");
 const logger = require("./middleware/logger");
 const port = process.env.PORT || 5000;
@@ -12,6 +13,9 @@ connectDB();
 
 // initialize express
 const app = express();
+
+// enable access by usign cors
+app.use(cors());
 
 // middlewares
 

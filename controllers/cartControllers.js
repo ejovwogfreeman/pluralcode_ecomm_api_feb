@@ -39,6 +39,7 @@ const addToCart = async (req, res) => {
 
     res.json({ msg: "Item added to cart successfully", cart });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ msg: "failed to add to cart" });
   }
 };
@@ -46,17 +47,22 @@ const addToCart = async (req, res) => {
 const removeFromCart = async (req, res) => {
   try {
     const { productId } = req.body;
-    let cart = await cart.findOne();
 
-    if (!cart) return res.status(404).json({ msg: "cart not found" });
+    const existingCart = await Cart.findOne();
 
-    cart.items = cart.items.filter(
+    if (!existingCart) {
+      return res.status(404).json({ msg: "cart not found" });
+    }
+
+    existingCart.items = existingCart.items.filter(
       (item) => item.product.toString() !== productId
     );
 
-    await cart.save();
+    await existingCart.save();
+
     res.json({ msg: "item removed from cart" });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: "failed to remove from cart" });
   }
 };
